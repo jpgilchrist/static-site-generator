@@ -1,6 +1,6 @@
 import unittest
 
-from utils import text_node_to_html_node, split_nodes_delimiter
+from utils import text_node_to_html_node, split_nodes_delimiter, extract_markdown_images, extract_markdown_links
 from textnode import TextNode, TextType
 
 
@@ -138,6 +138,24 @@ class TestUtils(unittest.TestCase):
             TextNode("already a code block", TextType.CODE),
         ]
         self.assertEqual(new_nodes, expected)
+        
+    def test_markdown_images(self):
+        text = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
+        expected = [('rick roll', 'https://i.imgur.com/aKaOqIh.gif'), ('obi wan', 'https://i.imgur.com/fJRm4Vk.jpeg')]
+        actual = extract_markdown_images(text)
+        self.assertEqual(actual, expected)
+        
+    def test_markdown_links(self):
+        text = "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)"
+        expected = [('to boot dev', 'https://www.boot.dev'), ('to youtube', 'https://www.youtube.com/@bootdotdev')]
+        actual = extract_markdown_links(text)
+        self.assertEqual(actual, expected)
+    
+    def test_markdown_mixed(self):
+        text = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and [obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
+        expected = [('rick roll', 'https://i.imgur.com/aKaOqIh.gif')]
+        actual = extract_markdown_images(text)
+        self.assertEqual(actual, expected)
 
 
 if __name__ == "__main__":
