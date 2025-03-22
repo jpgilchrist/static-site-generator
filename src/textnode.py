@@ -9,9 +9,20 @@ class TextType(Enum):
     LINK = "link"
     IMAGE = "image"
 
+    def get_delimiter(self):
+        match (self):
+            case TextType.CODE:
+                return "`"
+            case TextType.ITALIC:
+                return "_"
+            case TextType.BOLD:
+                return "**"
+            case _:
+                return None
+
 
 class TextNode:
-    def __init__(self, text, text_type, url = None):
+    def __init__(self, text, text_type, url=None):
         self.text = text
         self.text_type = text_type
         self.url = url
@@ -25,5 +36,3 @@ class TextNode:
 
     def __repr__(self):
         return f"TextNode({self.text}, {self.text_type}, {self.url})"
-    
-    
