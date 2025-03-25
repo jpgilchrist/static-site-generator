@@ -1,23 +1,6 @@
 import re
-from leafnode import LeafNode
-from textnode import TextNode, TextType
 from typing import List
-
-
-def text_node_to_html_node(text_node: TextNode):
-    match text_node.text_type:
-        case TextType.TEXT:
-            return LeafNode(None, text_node.text)
-        case TextType.BOLD:
-            return LeafNode("b", text_node.text)
-        case TextType.ITALIC:
-            return LeafNode("i", text_node.text)
-        case TextType.CODE:
-            return LeafNode("code", text_node.text)
-        case TextType.LINK:
-            return LeafNode("a", text_node.text, {"href": text_node.url})
-        case TextType.IMAGE:
-            return LeafNode("img", "", {"src": text_node.url, "alt": text_node.text})
+from textnode import TextNode, TextType
 
 
 def split_nodes_delimiter(
@@ -118,12 +101,3 @@ def text_to_text_nodes(text):
     nodes = split_nodes_links(nodes)
 
     return nodes
-
-
-def markdown_to_blocks(markdown):
-    if markdown is None:
-        return []
-
-    return list(
-        filter(lambda x: x != "", map(lambda x: x.strip(), markdown.split("\n\n")))
-    )
