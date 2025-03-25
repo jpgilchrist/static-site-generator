@@ -113,9 +113,17 @@ def text_to_text_nodes(text):
         delimiter = text_type.get_delimiter()
         if delimiter is not None:
             nodes = split_nodes_delimiter(nodes, delimiter, text_type)
-    
+
     nodes = split_nodes_image(nodes)
     nodes = split_nodes_links(nodes)
-    
+
     return nodes
-        
+
+
+def markdown_to_blocks(markdown):
+    if markdown is None:
+        return []
+
+    return list(
+        filter(lambda x: x != "", map(lambda x: x.strip(), markdown.split("\n\n")))
+    )
