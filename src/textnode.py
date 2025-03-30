@@ -10,17 +10,6 @@ class TextType(Enum):
     LINK = "link"
     IMAGE = "image"
 
-    def get_delimiter(self):
-        match (self):
-            case TextType.CODE:
-                return "`"
-            case TextType.ITALIC:
-                return "_"
-            case TextType.BOLD:
-                return "**"
-            case _:
-                return None
-
 
 class TextNode:
     def __init__(self, text, text_type, url=None):
@@ -30,9 +19,9 @@ class TextNode:
 
     def __eq__(self, other):
         return (
-            self.text == other.text
-            and self.text_type == other.text_type
-            and self.url == other.url
+                self.text == other.text
+                and self.text_type == other.text_type
+                and self.url == other.url
         )
 
     def __repr__(self):
@@ -40,16 +29,17 @@ class TextNode:
 
 
 def text_node_to_html_node(text_node: TextNode):
-    match text_node.text_type:
-        case TextType.TEXT:
-            return LeafNode(None, text_node.text)
-        case TextType.BOLD:
-            return LeafNode("b", text_node.text)
-        case TextType.ITALIC:
-            return LeafNode("i", text_node.text)
-        case TextType.CODE:
-            return LeafNode("code", text_node.text)
-        case TextType.LINK:
-            return LeafNode("a", text_node.text, {"href": text_node.url})
-        case TextType.IMAGE:
-            return LeafNode("img", "", {"src": text_node.url, "alt": text_node.text})
+    if text_node.text_type == TextType.TEXT:
+        return LeafNode(None, text_node.text)
+    elif text_node.text_type == TextType.BOLD:
+        return LeafNode("b", text_node.text)
+    elif text_node.text_type == TextType.ITALIC:
+        return LeafNode("i", text_node.text)
+    elif text_node.text_type == TextType.CODE:
+        return LeafNode("code", text_node.text)
+    elif text_node.text_type == TextType.LINK:
+        return LeafNode("a", text_node.text, {"href": text_node.url})
+    elif text_node.text_type == TextType.IMAGE:
+        return LeafNode("img", "", {"src": text_node.url, "alt": text_node.text})
+    else:
+        raise Exception(f"Unknown text type: {text_node.text_type}")

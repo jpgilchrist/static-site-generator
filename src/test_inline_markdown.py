@@ -6,12 +6,12 @@ from inline_markdown import (
     extract_markdown_links,
     split_nodes_image,
     split_nodes_links,
-    text_to_text_nodes,
+    text_to_textnodes,
 )
 from textnode import TextNode, TextType
 
 
-class TestInlineMarkdonw(unittest.TestCase):
+class TestInlineMarkdown(unittest.TestCase):
     def test_split_delim(self):
         node = TextNode("This is text with a `code block` word", TextType.TEXT)
         new_nodes = split_nodes_delimiter([node], "`", TextType.CODE)
@@ -220,7 +220,7 @@ class TestInlineMarkdonw(unittest.TestCase):
     def test_text_to_textnodes(self):
         self.maxDiff = None
         input = "This is **two** bold **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
-        actual = text_to_text_nodes(input)
+        actual = text_to_textnodes(input)
         expected = [
             TextNode("This is ", TextType.TEXT),
             TextNode("two", TextType.BOLD),

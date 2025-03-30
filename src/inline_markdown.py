@@ -4,14 +4,14 @@ from textnode import TextNode, TextType
 
 
 def split_nodes_delimiter(
-    old_nodes: List[TextNode], delimeter: str, text_type: TextType
+    old_nodes: List[TextNode], delimiter: str, text_type: TextType
 ):
     new_nodes: List[TextNode] = []
     for old_node in old_nodes:
         if old_node.text_type != TextType.TEXT:
             new_nodes.append(old_node)
         else:
-            sections = old_node.text.split(delimeter)
+            sections = old_node.text.split(delimiter)
             num_sections = len(sections)
             if num_sections > 2:
                 if num_sections % 2 == 0:
@@ -23,7 +23,7 @@ def split_nodes_delimiter(
                         else:
                             new_nodes.append(TextNode(sections[i], text_type))
                     new_nodes.append(
-                        TextNode(delimeter.join(sections[-2:]), TextType.TEXT)
+                        TextNode(delimiter.join(sections[-2:]), TextType.TEXT)
                     )
                 else:
                     for i in range(num_sections):
@@ -34,7 +34,7 @@ def split_nodes_delimiter(
                         else:
                             new_nodes.append(TextNode(sections[i], text_type))
             else:
-                new_nodes.append(TextNode(delimeter.join(sections), TextType.TEXT))
+                new_nodes.append(TextNode(delimiter.join(sections), TextType.TEXT))
     return new_nodes
 
 
@@ -90,14 +90,11 @@ def extract_markdown_links(text):
     return re.findall(r"(?<!\!)\[(.*?)\]\((.*?)\)", text)
 
 
-def text_to_text_nodes(text):
+def text_to_textnodes(text):
     nodes = [TextNode(text, TextType.TEXT)]
-    for text_type in TextType:
-        delimiter = text_type.get_delimiter()
-        if delimiter is not None:
-            nodes = split_nodes_delimiter(nodes, delimiter, text_type)
-
+    nodes = split_nodes_delimiter(nodes, "**", TextType.BOLD)
+    nodes = split_nodes_delimiter(nodes, "_", TextType.ITALIC)
+    nodes = split_nodes_delimiter(nodes, "`", TextType.CODE)
     nodes = split_nodes_image(nodes)
     nodes = split_nodes_links(nodes)
-
     return nodes
