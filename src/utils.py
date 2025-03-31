@@ -12,8 +12,8 @@ def extract_title(markdown):
     return titles[0]
 
 
-def generate_page(from_path, template_path, dest_path):
-    print(f"Generating page {from_path} -> {dest_path} using {template_path}")
+def generate_page(from_path, template_path, dest_path, base_path="/"):
+    print(f"Generating page {from_path} -> {dest_path} using {template_path} ({base_path})")
 
     if not os.path.exists(dest_path):
         os.mkdir(dest_path)
@@ -27,7 +27,9 @@ def generate_page(from_path, template_path, dest_path):
         with open(template_path, "r") as template_file:
             template = template_file.read()
 
-            html = template.replace("{{ Title }}", title).replace("{{ Content }}", content)
+            html = template.replace("{{ Title }}", title)
+            html = html.replace("{{ Content }}", content)
+            html = html.replace('href="/', f'href="{base_path}')
 
             dest_file_name = str(os.path.basename(from_path).replace(".md", ".html"))
             if not os.path.exists(os.path.join(dest_path, dest_file_name)):
@@ -35,7 +37,7 @@ def generate_page(from_path, template_path, dest_path):
                     dest_file.write(html)
 
 
-def generate_all(src_path, dest_path, template_path="./template.html"):
+def generate_all(src_path, dest_path, template_path="./template.html", base_path="/"):
     if not os.path.exists(src_path):
         raise Exception("Source directory does not exist", src_path)
 
@@ -46,10 +48,10 @@ def generate_all(src_path, dest_path, template_path="./template.html"):
         item_src_path = os.path.join(src_path, item)
         item_dest_path = os.path.join(dest_path, item)
         if os.path.isdir(item_src_path):
-            generate_all(item_src_path, item_dest_path)
+            generate_all(item_src_path, item_dest_path, base_path=base_path)
         else:
             if item.endswith(".md"):
-                generate_page(item_src_path, template_path, dest_path)
+                generate_page(item_src_path, template_path, dest_path, base_path=base_path)
 
 
 def copy_all(src, dest):
